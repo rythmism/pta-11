@@ -1,0 +1,12 @@
+name: Polyglot Game Engine Continuous Verification Pipeline
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+jobs:
+  build-and-validate:
+    runs-on: windows-2022
+    steps:
+      - name: Checkout Source Repository
+        uses: actions/checkout@v4
