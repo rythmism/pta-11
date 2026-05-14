@@ -1,12 +1,48 @@
 name: Polyglot Game Engine Continuous Verification Pipeline
+
 on:
   push:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
+
 jobs:
   build-and-validate:
-    runs-on: windows-2022
+    runs-on: ubuntu-22.04
     steps:
-      - name: Checkout Source Repository
-        uses: actions/checkout@v4
+    - name: Checkout Source Repository
+      uses: actions/checkout@v4
+
+    - name: Install Linux Compiler Clusters and Valgrind Diagnostic Runtime
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc g++ gfortran open-cobol nodejs npm python3 python3-pip valgrind
+
+    - name: Install Stable Rust Compiler Node
+      uses: dtolnay/rust-toolchain@stable
+
+    - name: Verify Language Compiler Toolchain Stability
+      run: |
+        gcc --version
+        gfortran --version
+        cobc --version
+        rustc --version
+        node --version
+        python3 --version
+
+    - name: Execute Multi-Language Unified Project Compilation Pipeline
+      run: |
+        mkdir -p build
+        gfortran -c src/generator.f90 -o build/generator.o
+        cobc -c -fno-clean src/shop.cob -o build/shop.o
+        cobc -c -fno-clean src/ledger.cob -o build/ledger.o
+        rustc --crate-type=staticlib src/physics.rs --out-dir build
+        gcc -c src/renderer.c -o build/renderer.o
+        g++ src/main.cpp build/renderer.o build/generator.o build/shop.o build/ledger.o build/libphysics.a -lrt -lpthread -EHsc -MD -o game.out
+
+    - name: Run Valgrind Structural Memory Leak Diagnostics Validation Pass
+      run: |
+        # Seed mock variables to bypass blocking user input prompts during tests
+        echo "w" > key.txt
+        echo "0 0" > build/active_level.tmp
+        valgrind --leak-check=full --show-leak-kinds=all --errors-to-stderr=yes --error-exitcode=1 ./game.out --test-mode
