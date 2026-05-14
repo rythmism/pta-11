@@ -1,0 +1,44 @@
+# === Compilation & Build Artifacts ===
+build/
+bin/
+obj/
+*.exe
+*.o
+*.obj
+*.lib
+*.a
+*.pdb
+*.ilk
+*.tmp
+
+# === Rust/Cargo Caches ===
+target/
+**/*.rs.bk
+
+# === Node.js/JavaScript Dependencies ===
+node_modules/
+package-lock.json
+npm-debug.log*
+
+# === Python Runtime Artifacts ===
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.venv/
+venv/
+
+# === Transient In-Game State Communication Files ===
+key.txt
+movement.txt
+
+# === Operating System & IDE Overhead ===
+.vscode/
+.idea/
+*.suo
+*.user
+*.sln
+*.vcxproj
+Thumbs.db
+Desktop.ini
